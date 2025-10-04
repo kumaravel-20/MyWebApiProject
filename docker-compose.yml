@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  webapi:
+    image: mywebapi:latest
+    build:
+      context: ./MyWebApi
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    secrets:
+      - app_config
+
+secrets:
+  app_config:
+    external: true
