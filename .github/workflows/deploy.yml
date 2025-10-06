@@ -1,26 +1,15 @@
 name: Deploy Docker Secret
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Deploy Docker secret
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SWARM_HOST }}
-          username: ${{ secrets.SWARM_USER }}
-          key: ${{ secrets.SWARM_SSH_KEY }}
-          script: |
-            if docker secret inspect app_config >/dev/null 2>&1; then
-              docker secret rm app_config
-            fi
-            echo '${{ secrets.APP_CONFIG }}' | docker secret create app_config -
-            docker stack deploy -c docker-compose.yml myapp
+      - name: Create Docker Secret
+        run: |
+          echo "${{ secrets.APP_CONFIG }}" | docker secret create app_config -
