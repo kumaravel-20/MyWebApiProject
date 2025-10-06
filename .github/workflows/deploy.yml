@@ -1,0 +1,21 @@
+name: Deploy Docker Secret
+
+on:
+  workflow_dispatch:   
+  push:
+    branches:
+      - main         
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create/Update Docker Secret
+        run: |
+          if docker secret ls | findstr app_config; then
+            docker secret rm app_config
+          fi
+          echo "${{ secrets.APP_CONFIG }}" | docker secret create app_config -
