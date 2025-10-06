@@ -19,6 +19,9 @@ jobs:
           if (docker secret ls | Select-String app_config) {
             docker secret rm app_config
           }
-          $Env:APP_CONFIG = "${{ secrets.APP_CONFIG }}"
-          echo $Env:APP_CONFIG | docker secret create app_config -
+          $config = @"
+          ${{ secrets.APP_CONFIG }}
+          "@
+              $config | docker secret create app_config -
+
 
